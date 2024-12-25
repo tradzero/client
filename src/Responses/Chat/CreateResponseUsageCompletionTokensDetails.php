@@ -8,9 +8,9 @@ final class CreateResponseUsageCompletionTokensDetails
 {
     private function __construct(
         public readonly ?int $audioTokens,
-        public readonly int $reasoningTokens,
-        public readonly int $acceptedPredictionTokens,
-        public readonly int $rejectedPredictionTokens
+        public readonly ?int $reasoningTokens,
+        public readonly ?int $acceptedPredictionTokens,
+        public readonly ?int $rejectedPredictionTokens
     ) {}
 
     /**
@@ -20,9 +20,9 @@ final class CreateResponseUsageCompletionTokensDetails
     {
         return new self(
             $attributes['audio_tokens'] ?? null,
-            $attributes['reasoning_tokens'],
-            $attributes['accepted_prediction_tokens'],
-            $attributes['rejected_prediction_tokens'],
+            $attributes['reasoning_tokens'] ?? null,
+            $attributes['accepted_prediction_tokens'] ?? null,
+            $attributes['rejected_prediction_tokens'] ?? null,
         );
     }
 
@@ -35,11 +35,9 @@ final class CreateResponseUsageCompletionTokensDetails
             'reasoning_tokens' => $this->reasoningTokens,
             'accepted_prediction_tokens' => $this->acceptedPredictionTokens,
             'rejected_prediction_tokens' => $this->rejectedPredictionTokens,
+            'audio_tokens' => $this->audioTokens,
         ];
-
-        if (! is_null($this->audioTokens)) {
-            $result['audio_tokens'] = $this->audioTokens;
-        }
+        $result = array_filter($result, fn ($value) => ! is_null($value));
 
         return $result;
     }
